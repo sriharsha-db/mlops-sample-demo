@@ -1,0 +1,31 @@
+name: dev push action
+
+on:
+  push:
+    branches:
+      - "dev"
+
+jobs:
+  unit-testing:
+    runs-on: ubuntu-latest
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_STAGING_HOST }}
+      DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_STAGING_TOKEN }}
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9.13'
+      - name: Install pip
+        run: |
+          python -m pip install --upgrade pip
+      - name: Install dependencies and project in dev mode
+        run: |
+          pip install -r requirements.txt
+          pip install -r test-requirements.txt
+          pip install -e .
+      - name: Run unit tests
+        run: |
+          echo "Launching unit tests"
+          pytest tests/unit

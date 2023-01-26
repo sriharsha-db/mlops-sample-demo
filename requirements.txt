@@ -1,0 +1,7 @@
+pyspark==3.3.0
+delta-spark==2.2.0
+scikit-learn
+xgboost
+pandas
+mlflow
+threadpoolctl>=3.0.0
