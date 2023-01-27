@@ -4,12 +4,32 @@ on:
   push:
     branches:
       - "dev"
+    tags:
+      - "v*"
 
 jobs:
   github-example-tags:
     runs-on: ubuntu-latest
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_STAGING_HOST }}
+      DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_STAGING_TOKEN }}
     steps:
-      - name: GitHub Tag Name example
+      - name: GitHub Tag
         run: |
           echo "Tag name from GITHUB_REF_NAME: $GITHUB_REF_NAME"
-          echo "Tag name from github.ref_name: ${{  github.ref_name }}"
+          echo "Tag name from github.ref_name: ${{ github.ref_name }}"
+      - name: checkout the tag
+        uses: actions/checkout@v3
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9.13'
+      - name: Install pip
+        run: |
+          python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: |
+          pip install -r test-requirements.txt
+      - name: Deploy/Copy the latest jobs
+        run: |
+          python cicd/databricks_actions.py prod $GITHUB_REF_NAME tag
