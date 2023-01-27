@@ -7,6 +7,9 @@ from databricks_cli.sdk.api_client import ApiClient
 from databricks_cli.jobs.api import JobsApi
 from databricks_cli.runs.api import RunsApi
 
+#TODO create args parser and read runNow flag & environment
+
+
 api_client = ApiClient(
   host  = os.getenv('DATABRICKS_HOST'),
   token = os.getenv('DATABRICKS_TOKEN')
@@ -14,7 +17,7 @@ api_client = ApiClient(
 jobs_api = JobsApi(api_client)
 runs_api = RunsApi(api_client)
 
-file_dir="scripts/cicd"
+file_dir="conf/cicd"
 for file_name in os.listdir(file_dir):
     if file_name.endswith("job.json"):
         print(f"Job update for {file_name}")
