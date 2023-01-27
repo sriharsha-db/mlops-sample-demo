@@ -81,3 +81,16 @@ cfg = ModelTrainConfig(mlflow_tracking_cfg=mlflow_tracking_cfg,
 # Instantiate pipeline
 model_train_pipeline = ModelTrain(cfg)
 model_train_pipeline.run()
+
+# COMMAND ----------
+
+import mlflow
+from mlflow.tracking import MlflowClient
+
+mlflow_client = MlflowClient()
+model_name = cfg.mlflow_tracking_cfg.model_name
+staging_model_version = mlflow_client.get_latest_versions(name=model_name, stages=['none'])[0]
+print(f"moving the {model_name} to staging environment for version {staging_model_version.version}")
+mlflow_client.transition_model_version_stage(name=model_name,
+                                      version=staging_model_version.version,
+                                      stage='staging')
