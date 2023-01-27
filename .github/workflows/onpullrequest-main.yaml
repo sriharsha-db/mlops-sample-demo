@@ -1,4 +1,4 @@
-name: dev push action
+name: dev pull request action
 
 on:
   pull_request:
@@ -30,4 +30,4 @@ jobs:
       - name: Run unit tests
         run: |
           echo "Launching unit tests"
-          pytest tests/unit
+          pytest tests/unit --cov
