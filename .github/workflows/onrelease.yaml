@@ -2,8 +2,6 @@ name: on release action from main
 
 on:
   push:
-    branches:
-      - "dev"
     tags:
       - "v*"
 

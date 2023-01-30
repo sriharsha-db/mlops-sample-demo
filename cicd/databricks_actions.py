@@ -73,7 +73,7 @@ class UpdateDatabricksJobs():
         print(req_json)
         job_create_resp = self.jobs_api.create_job(req_json)
 
-      if self.run_now:
+      if job_create_resp:
         print(f"running run now for the job {file_name}")
         self.jobs_api.run_now(job_id=job_create_resp['job_id'], notebook_params=None, 
         python_named_params=None, python_params=None, spark_submit_params=None, jar_params=None)
