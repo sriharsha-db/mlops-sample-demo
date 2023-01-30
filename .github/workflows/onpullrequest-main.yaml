@@ -1,9 +1,11 @@
-name: dev push action
+name: dev pull request action
 
 on:
-  push:
+  pull_request:
     branches:
-      - "dev"
+      - main
+    tags-ignore:
+      - 'v*'
 
 jobs:
   unit-testing:
@@ -28,4 +30,4 @@ jobs:
       - name: Run unit tests
         run: |
           echo "Launching unit tests"
-          pytest tests/unit
+          pytest tests/unit --cov

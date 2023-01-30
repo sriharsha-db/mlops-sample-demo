@@ -1,0 +1,71 @@
+{
+    "name": "test_mlops_e2e_env",
+    "email_notifications": {
+        "no_alert_for_skipped_runs": false
+    },
+    "webhook_notifications": {},
+    "timeout_seconds": 0,
+    "max_concurrent_runs": 1,
+    "tasks": [
+        {
+            "task_key": "mlops_e2e_dev_demo_setup",
+            "notebook_task": {
+                "notebook_path": "notebooks/demo_setup",
+                "source": "GIT"
+            },
+            "existing_cluster_id": "1205-050837-jsn08vrj",
+            "timeout_seconds": 0,
+            "email_notifications": {}
+        },
+        {
+            "task_key": "mlops_e2e_dev_feature",
+            "depends_on": [
+                {
+                    "task_key": "mlops_e2e_dev_demo_setup"
+                }
+            ],
+            "notebook_task": {
+                "notebook_path": "notebooks/feature_table_creator",
+                "source": "GIT"
+            },
+            "existing_cluster_id": "1205-050837-jsn08vrj",
+            "timeout_seconds": 0,
+            "email_notifications": {}
+        },
+        {
+            "task_key": "mlops_e2e_dev_model_train",
+            "depends_on": [
+                {
+                    "task_key": "mlops_e2e_dev_feature"
+                }
+            ],
+            "notebook_task": {
+                "notebook_path": "notebooks/model_train",
+                "source": "GIT"
+            },
+            "existing_cluster_id": "1205-050837-jsn08vrj",
+            "timeout_seconds": 0,
+            "email_notifications": {}
+        },
+        {
+            "task_key": "mlops_e2e_dev_model_deployment",
+            "depends_on": [
+                {
+                    "task_key": "mlops_e2e_dev_model_train"
+                }
+            ],
+            "notebook_task": {
+                "notebook_path": "notebooks/model_deployment",
+                "source": "GIT"
+            },
+            "existing_cluster_id": "1205-050837-jsn08vrj",
+            "timeout_seconds": 0,
+            "email_notifications": {}
+        }
+    ],
+    "git_source": {
+        "git_url": "https://github.com/sriharsha-db/mlops-sample-demo.git",
+        "git_provider": "gitHub"
+    },
+    "format": "MULTI_TASK"
+}
