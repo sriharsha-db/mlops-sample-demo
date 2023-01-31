@@ -33,7 +33,7 @@ class UpdateDatabricksJobs():
     print(f"env={self.env}, git reference={self.git_ref}, git tag/branch={self.git_tag_branch}")
 
   def _get_jobs_list(self) -> dict:
-    file_dir="cicd"
+    file_dir="cicd/jobs"
     jobs_dict = {}
     for file_name in os.listdir(file_dir):
       if file_name.endswith("job.json"):
@@ -58,6 +58,7 @@ class UpdateDatabricksJobs():
   def update_jobs(self) -> None:
     jobs_dict = self._get_jobs_list()
     job_create_resp = None
+    job_id_temp = None
     for file_name, req_json in jobs_dict.items():
       self._update_env_value(req_json)
       self._update_git_version(req_json)
@@ -68,14 +69,16 @@ class UpdateDatabricksJobs():
         print(f"reset the existing job {file_name} with details")
         print(self.reset_json_template)
         job_create_resp = self.jobs_api.reset_job(self.reset_json_template)
+        job_id_temp = existing_jobs[0]['job_id']
       else:
         print("created a new job with details ",file_name)
         print(req_json)
         job_create_resp = self.jobs_api.create_job(req_json)
+        job_id_temp = job_create_resp['job_id']
 
-      if job_create_resp:
-        print(f"running run now for the job {file_name}")
-        self.jobs_api.run_now(job_id=job_create_resp['job_id'], notebook_params=None, 
+      if job_id_temp:
+        print(f"running run now for the job {file_name} with job id {job_id_temp}")
+        self.jobs_api.run_now(job_id=job_id_temp, notebook_params=None, 
         python_named_params=None, python_params=None, spark_submit_params=None, jar_params=None)
 
 

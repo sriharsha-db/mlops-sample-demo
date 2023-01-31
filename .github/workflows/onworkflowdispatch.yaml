@@ -1,0 +1,17 @@
+on:
+  workflow_dispatch:
+    inputs:
+      tags:
+        description: 'Git tag to use for building docker image'
+        required: true
+        type: string
+
+jobs:
+  build-publish-docker:
+    runs-on: ubuntu-latest
+    steps:
+      - name: test tag printing
+        run: |
+          echo "Tags: $TAGS"
+        env:
+          GIT_TAG: ${{ inputs.tags }}
