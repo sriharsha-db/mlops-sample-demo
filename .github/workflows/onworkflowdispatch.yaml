@@ -19,7 +19,7 @@ jobs:
           echo "Tags: ${{ inputs.tags }}"
           echo "Tag name from github.ref_name: ${{ github.ref_name }}"
           ls -ltrh
-          cd mlops-sample-demo/service
+          cd service
         env:
           GIT_TAG: ${{ inputs.tags }}
       - name: Set up Docker Buildx
