@@ -35,8 +35,8 @@ jobs:
         run: |
           echo "Model name from input: ${{ inputs.model_name }}"
           echo "Tag name from github.ref_name: ${{ github.ref_name }}"
-          ls -ltrh
           cd service
+          ls -ltrh
       - name: azure docker log-in
         uses: azure/docker-login@v1
         with:
