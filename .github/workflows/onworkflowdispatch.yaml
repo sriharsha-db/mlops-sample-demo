@@ -44,8 +44,7 @@ jobs:
           username: ${{ secrets.ACR_USERNAME }}
           password: ${{ secrets.ACR_PASSWORD }}
       - name: docker build and push
-        uses: docker/build-push-action@v4
-        with:
-          push: true
-          tags: sriharshademo.azurecr.io/telco-service:${{ github.ref_name }}
-          file: service/Dockerfile
+        run: |
+          cd service
+          docker build -t sriharshademo.azurecr.io/telco-service:${{ github.ref_name }} .
+          docker push sriharshademo.azurecr.io/telco-service:${{ github.ref_name }}
