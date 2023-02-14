@@ -85,3 +85,27 @@ cfg = ModelDeploymentConfig(mlflow_tracking_cfg=mlflow_tracking_cfg,
 # Instantiate pipeline
 model_deployment_pipeline = ModelDeployment(cfg)
 model_deployment_pipeline.run()
+
+# COMMAND ----------
+
+import requests
+import telco_churn
+
+cd_trigger_url = f"https://api.github.com/repos/sriharsha-db/mlops-sample-demo/actions/workflows/onworkflowdispatch.yaml/dispatches"
+authorization = f"Bearer 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"
+code_version = dbutils.jobs.
+model_name = mlflow_tracking_cfg.model_name
+
+print(f"code tag:{code_version}, model name:{model_name}")
+
+# COMMAND ----------
+
+response = requests.post(
+  cd_trigger_url,
+  json={"ref": f"dev", "inputs": {"model_name": model_name}},
+  headers={"Authorization": authorization, "X-GitHub-Api-Version": "2022-11-28", "Accept": "application/vnd.github+json"},
+)
+assert response.ok, (
+  f"Triggering CD workflow {cd_trigger_url} for model {model_name} "
+  f"failed with status code {response.status_code}. Response body:\n{response.content}"
+)
