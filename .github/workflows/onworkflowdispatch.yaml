@@ -3,17 +3,48 @@ name: trigger from workflow dispatch
 on:
   workflow_dispatch:
     inputs:
-      tags:
-        description: 'Git tag to use for building docker image'
+      model_name:
+        description: 'model name to download from mlflow repo'
         required: true
-        type: string
+        type: string 
 
 jobs:
   build-publish-docker:
     runs-on: ubuntu-latest
+    env:
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_STAGING_HOST }}
+      DATABRICKS_TOKEN:  ${{ secrets.DATABRICKS_STAGING_TOKEN }}
+      MLFLOW_TRACKING_URI: databricks
     steps:
-      - name: test tag printing
+      - name: checkout the tag
+        uses: actions/checkout@v3
+      - name: Setup python
+        uses: actions/setup-python@v4
+        with:
+          python-version: '3.9.13'
+      - name: Install pip
         run: |
-          echo "Tags: $TAGS"
-        env:
-          GIT_TAG: ${{ inputs.tags }}
+          python -m pip install --upgrade pip
+      - name: Install dependencies
+        run: |
+          pip install -r test-requirements.txt
+      - name: download models from mlflow
+        run: |
+          python cicd/download_models.py prod ${{ inputs.model_name }}
+      - name: basic shell ops
+        run: |
+          echo "Model name from input: ${{ inputs.model_name }}"
+          echo "Tag name from github.ref_name: ${{ github.ref_name }}"
+          cd service
+          ls -ltrh
+      - name: azure docker log-in
+        uses: azure/docker-login@v1
+        with:
+          login-server: sriharshademo.azurecr.io
+          username: ${{ secrets.ACR_USERNAME }}
+          password: ${{ secrets.ACR_PASSWORD }}
+      - name: docker build and push
+        run: |
+          cd service
+          docker build -t sriharshademo.azurecr.io/telco-service:${{ github.ref_name }} .
+          docker push sriharshademo.azurecr.io/telco-service:${{ github.ref_name }}
