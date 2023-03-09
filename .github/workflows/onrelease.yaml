@@ -6,7 +6,7 @@ on:
       - "v*"
 
 jobs:
-  github-example-tags:
+  update-code-databricks:
     runs-on: ubuntu-latest
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_STAGING_HOST }}
