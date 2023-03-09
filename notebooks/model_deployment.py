@@ -93,7 +93,7 @@ import telco_churn
 
 cd_trigger_url = f"https://api.github.com/repos/sriharsha-db/mlops-sample-demo/actions/workflows/onworkflowdispatch.yaml/dispatches"
 authorization = f"Bearer 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"
-code_version = dbutils.jobs.
+code_version = telco_churn.__version__ 
 model_name = mlflow_tracking_cfg.model_name
 
 print(f"code tag:{code_version}, model name:{model_name}")
