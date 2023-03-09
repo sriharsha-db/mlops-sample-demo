@@ -92,7 +92,7 @@ import requests
 import telco_churn
 
 cd_trigger_url = f"https://api.github.com/repos/sriharsha-db/mlops-sample-demo/actions/workflows/onworkflowdispatch.yaml/dispatches"
-authorization = f"Bearer {dbutils.secrets.get(scope = "fieldeng", key = "sriharsha_git_pat")}"
+authorization = f"Bearer {dbutils.secrets.get(scope = 'fieldeng', key = 'sriharsha_git_pat')}"
 code_version = telco_churn.__version__ 
 model_name = mlflow_tracking_cfg.model_name
 
