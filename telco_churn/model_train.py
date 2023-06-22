@@ -5,6 +5,7 @@ import pprint
 import pandas as pd
 import sklearn
 from sklearn.model_selection import train_test_split
+from sklearn.metrics import roc_auc_score
 import mlflow
 from mlflow.models import infer_signature
 
@@ -228,8 +229,15 @@ class ModelTrain:
             # Log metrics for the test set
             _logger.info('==========Model Evaluation==========')
             _logger.info('Evaluating and logging metrics')
-            test_metrics = mlflow.sklearn.eval_and_log_metrics(model, X_test, y_test, prefix='test_')
-            print(pd.DataFrame(test_metrics, index=[0]))
+            y_test_pred = model.predict(X_test)
+            y_train_pred = model.predict(X_train)
+
+            roc_test = roc_auc_score(y_test, y_test_pred)
+            mlflow.log_metric('test_roc_score', roc_test)
+            roc_train = roc_auc_score(y_train, y_train_pred)
+            mlflow.log_metric('train_roc_score', roc_train)
+            # test_metrics = mlflow.sklearn.eval_and_log_metrics(model, X_test, y_test, prefix='test_')
+            # print(pd.DataFrame(test_metrics, index=[0]))
 
             # Register model to MLflow Model Registry if provided
             if mlflow_tracking_cfg.model_name is not None:

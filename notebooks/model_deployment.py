@@ -1,8 +1,8 @@
 # Databricks notebook source
 # MAGIC %md
-# MAGIC 
+# MAGIC
 # MAGIC # `model_deployment`
-# MAGIC 
+# MAGIC
 # MAGIC Pipeline to execute model deployment. This class orchestrates the comparison of the current Production model versus Staging model. 
 # MAGIC The Production model will be the most recent model version under registered in the MLflow Model Registry under the provided model_name, for stage="Production". Likewise for Staging.
 # MAGIC Execution will involve loading the models and performing batch inference for a specified reference dataset.
@@ -10,9 +10,9 @@
 # MAGIC `higher_is_better` indicates whether a higher value for the evaluation metric equates to a better peforming model.
 # MAGIC Dependent on this comparison the candidate Staging model will be either promoted to Production (and the current
 # MAGIC Production model archived) if performing better, or the Staging model will be archived if it does not perform better than the current Production model.
-# MAGIC 
+# MAGIC
 # MAGIC Metrics computed when comparing the two models will be logged to MLflow, under the provided experiment_id or experiment_path.
-# MAGIC 
+# MAGIC
 # MAGIC **Pipeline Steps**:
 # MAGIC 1. Set MLflow Tracking experiment. Used to track metrics computed when comparing Staging versus Production
 # MAGIC        models.
@@ -88,24 +88,24 @@ model_deployment_pipeline.run()
 
 # COMMAND ----------
 
-import requests
-import telco_churn
+# import requests
+# import telco_churn
 
-cd_trigger_url = f"https://api.github.com/repos/sriharsha-db/mlops-sample-demo/actions/workflows/onworkflowdispatch.yaml/dispatches"
-authorization = f"Bearer {dbutils.secrets.get(scope = 'fieldeng', key = 'sriharsha_git_pat')}"
-code_version = telco_churn.__version__ 
-model_name = mlflow_tracking_cfg.model_name
+# cd_trigger_url = f"https://api.github.com/repos/sriharsha-db/mlops-sample-demo/actions/workflows/onworkflowdispatch.yaml/dispatches"
+# authorization = f"Bearer {dbutils.secrets.get(scope = 'fieldeng', key = 'sriharsha_git_pat')}"
+# code_version = telco_churn.__version__ 
+# model_name = mlflow_tracking_cfg.model_name
 
-print(f"code tag:{code_version}, model name:{model_name}")
+# print(f"code tag:{code_version}, model name:{model_name}")
 
 # COMMAND ----------
 
-response = requests.post(
-  cd_trigger_url,
-  json={"ref": f"dev", "inputs": {"model_name": model_name}},
-  headers={"Authorization": authorization, "X-GitHub-Api-Version": "2022-11-28", "Accept": "application/vnd.github+json"},
-)
-assert response.ok, (
-  f"Triggering CD workflow {cd_trigger_url} for model {model_name} "
-  f"failed with status code {response.status_code}. Response body:\n{response.content}"
-)
+# response = requests.post(
+#   cd_trigger_url,
+#   json={"ref": f"dev", "inputs": {"model_name": model_name}},
+#   headers={"Authorization": authorization, "X-GitHub-Api-Version": "2022-11-28", "Accept": "application/vnd.github+json"},
+# )
+# assert response.ok, (
+#   f"Triggering CD workflow {cd_trigger_url} for model {model_name} "
+#   f"failed with status code {response.status_code}. Response body:\n{response.content}"
+# )
