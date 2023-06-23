@@ -9,3 +9,4 @@ mlflow
 threadpoolctl>=3.0.0
 python-dotenv==0.20.0
 databricks-cli==0.17.3
+urllib3==1.26.11
